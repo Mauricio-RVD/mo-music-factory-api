@@ -4,44 +4,10 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="put:\songs\(songId):application\json:mo-music-factory-api-config">
-	        <ee:transform doc:name="Transform Message">
-	            <ee:variables>
-	                <ee:set-variable variableName="songId">attributes.uriParams.'songId'</ee:set-variable>
-	            </ee:variables>
-	        </ee:transform>
-	        <ee:transform doc:name="Transform Message">
-	            <ee:message>
-	                <ee:set-payload><![CDATA[%dw 2.0
-	output application/json
-	---
-	{
-	  statusCode: 200,
-	  message: "The song has been updated."
-	}]]></ee:set-payload>
-	            </ee:message>
-	        </ee:transform>
-	</flow>
-	<flow name="delete:\songs\(songId):mo-music-factory-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="songId">attributes.uriParams.'songId'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  statusCode: 200,
-  message: "The song has been deleted."
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="get:\songs:mo-music-factory-api-config">
-        <ee:transform doc:name="Transform Message">
+	<flow name="get:\songs:mo-music-factory-api-config">
+        <set-variable value="song-main::impl-get-songs" doc:name="currentFlow" doc:id="ff175e3e-8bd2-4bc5-adf9-feae3e25df65" variableName="currentFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="4fbb1aa6-6c7e-4057-8170-e12b17ce6601" name="impl-get-songs"/>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -145,6 +111,42 @@ output application/json
       artistId: 102
     }
   ]
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	<flow name="put:\songs\(songId):application\json:mo-music-factory-api-config">
+	        <ee:transform doc:name="Transform Message">
+	            <ee:variables>
+	                <ee:set-variable variableName="songId">attributes.uriParams.'songId'</ee:set-variable>
+	            </ee:variables>
+	        </ee:transform>
+	        <ee:transform doc:name="Transform Message">
+	            <ee:message>
+	                <ee:set-payload><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+	  statusCode: 200,
+	  message: "The song has been updated."
+	}]]></ee:set-payload>
+	            </ee:message>
+	        </ee:transform>
+	</flow>
+	<flow name="delete:\songs\(songId):mo-music-factory-api-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="songId">attributes.uriParams.'songId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  statusCode: 200,
+  message: "The song has been deleted."
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

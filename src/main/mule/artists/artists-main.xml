@@ -4,63 +4,33 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="put:\artists\(artistId):application\json:mo-music-factory-api-config">
-	        <ee:transform doc:name="Transform Message">
-	            <ee:variables>
-	                <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
-	            </ee:variables>
-	        </ee:transform>
-	        <ee:transform doc:name="Transform Message">
-	            <ee:message>
-	                <ee:set-payload><![CDATA[%dw 2.0
-	output application/json
-	---
-	{
-	  statusCode: 200,
-	  message: "The artist has been updated."
-	}]]></ee:set-payload>
-	            </ee:message>
-	        </ee:transform>
-	</flow>
-	<flow name="delete:\artists\(artistId):mo-music-factory-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
+	<flow name="get:\artists:mo-music-factory-api-config">
+        <set-variable value="artists-main::impl-get-artists" doc:name="currentFlow" doc:id="f465ff52-27df-41c0-ba83-3f0fb3811217" variableName="currentFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="dc763e1b-9a29-4c45-826f-f478363ffd1b" name="impl-get-artists"/>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
   statusCode: 200,
-  message: "The artist has been deleted."
+  message: "SUCCESSFUL",
+  artist: {
+    groupName: "Grateful Dead",
+    firstName: "Garcia",
+    lastName: "Gerry",
+    dateOfBirth: "1948-01-07"
+  }
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="patch:\artists\(artistId):application\json:mo-music-factory-api-config">
+	<flow name="get:\artists\(artistId):mo-music-factory-api-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  statusCode: 201,
-  message: "SUCCESS",
-  bioUrl: "https://last.fm/music/The Beatles/+wiki",
-  recordsUpdated: 3
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-	<flow name="get:\artists:mo-music-factory-api-config">
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -119,32 +89,10 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-	<flow name="get:\artists\(artistId):mo-music-factory-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  statusCode: 200,
-  message: "SUCCESSFUL",
-  artist: {
-    groupName: "Grateful Dead",
-    firstName: "Garcia",
-    lastName: "Gerry",
-    dateOfBirth: "1948-01-07"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
 	<flow name="post:\artists:application\json:mo-music-factory-api-config">
-        <ee:transform doc:name="Transform Message">
+        <set-variable value="artists-main::impl-add-artists" doc:name="currentFlow" doc:id="0cae2a5c-29da-4d62-9baa-8865ed5c0def" variableName="currentFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="8f7134a1-8803-4e50-8f4e-f74587e41d47" name="impl-add-artists"/>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -175,6 +123,64 @@ output application/json
       }
     ]
   }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	<flow name="put:\artists\(artistId):application\json:mo-music-factory-api-config">
+	        <ee:transform doc:name="Transform Message">
+	            <ee:variables>
+	                <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
+	            </ee:variables>
+	        </ee:transform>
+	        <ee:transform doc:name="Transform Message">
+	            <ee:message>
+	                <ee:set-payload><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+	  statusCode: 200,
+	  message: "The artist has been updated."
+	}]]></ee:set-payload>
+	            </ee:message>
+	        </ee:transform>
+	</flow>
+	<flow name="patch:\artists\(artistId):application\json:mo-music-factory-api-config">
+        <set-variable value="artists-main::impl-update-artist-urls" doc:name="currentFlow" doc:id="48c81741-1d3b-4233-96bf-2d7cc7a55464" variableName="currentFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="604b6446-f043-495a-832b-3510f91948a8" name="impl-update-artist-urls"/>
+		<ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  statusCode: 201,
+  message: "SUCCESS",
+  bioUrl: "https://last.fm/music/The Beatles/+wiki",
+  recordsUpdated: 3
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	<flow name="delete:\artists\(artistId):mo-music-factory-api-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="artistId">attributes.uriParams.'artistId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  statusCode: 200,
+  message: "The artist has been deleted."
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

@@ -4,4 +4,10 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="impl-get-albums" doc:id="675b2428-f4ef-4abf-970d-0e9dbd32e160" >
+		<logger level="INFO" doc:name="INFO START" doc:id="ee84fd8d-a8b5-4831-abf7-bc28a9f0313f" message="impl-get-albums::START"/>
+	</sub-flow>
+	<sub-flow name="impl-add-albums" doc:id="f826bd55-cde8-41ef-9d06-b96b7eb6aa48" >
+		<logger level="INFO" doc:name="INFO START" doc:id="119d4059-c5ad-487f-a86d-9836db42ecca" message="#['impl-add-albums::START::payload:'  ++ write(payload, 'application/json')]"/>
+	</sub-flow>
 	</mule>

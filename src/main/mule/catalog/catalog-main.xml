@@ -5,7 +5,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="get:\catalog:mo-music-factory-api-config">
-        <ee:transform doc:name="Transform Message">
+        <set-variable value="catalog-main::impl-get-catalog" doc:name="currentFlow" doc:id="70ed586f-e5c3-4c5d-b12a-f2f6415d3cb9" variableName="currentFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="bc735294-4dfa-462d-8936-74976bb48d2b" name="impl-get-catalog"/>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json

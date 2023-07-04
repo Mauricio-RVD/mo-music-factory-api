@@ -4,4 +4,7 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="impl-get-catalog" doc:id="e6ac3a7b-f21f-4015-b95c-e615a9d6c72d" >
+		<logger level="INFO" doc:name="INFO START" doc:id="0650fbde-4fc1-4542-bb47-e2d2432b3cfd" message="impl-get-catalog::START"/>
+	</sub-flow>
 </mule>

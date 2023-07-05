@@ -7,23 +7,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="get:\artists:mo-music-factory-api-config">
         <set-variable value="artists-main::impl-get-artists" doc:name="currentFlow" doc:id="f465ff52-27df-41c0-ba83-3f0fb3811217" variableName="currentFlow"/>
 		<flow-ref doc:name="Flow Reference" doc:id="dc763e1b-9a29-4c45-826f-f478363ffd1b" name="impl-get-artists"/>
-		<ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  statusCode: 200,
-  message: "SUCCESSFUL",
-  artist: {
-    groupName: "Grateful Dead",
-    firstName: "Garcia",
-    lastName: "Gerry",
-    dateOfBirth: "1948-01-07"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
     </flow>
 	<flow name="get:\artists\(artistId):mo-music-factory-api-config">
         <ee:transform doc:name="Transform Message">

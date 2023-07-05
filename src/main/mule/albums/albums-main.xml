@@ -7,36 +7,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="get:\albums:mo-music-factory-api-config">
         <set-variable value="albums-main::impl-get-albums" doc:name="currentFlow" doc:id="74281587-1ffc-43c3-99c1-5503114ea687" variableName="currentFlow"/>
 		<flow-ref doc:name="Flow Reference" doc:id="ef04bd8a-c58d-496c-975d-54c5ac7cc63c" name="impl-get-albums"/>
-		<ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  statusCode: 200,
-  message: "SUCCESS",
-  searchCriteria: "Let it Be",
-  albums: [
-    {
-      albumId: 1,
-      albumTitle: "The Beatles",
-      genre: "Rock",
-      publicationDate: "1968-11-22",
-      artistId: 1,
-      groupName: "The Beatles"
-    }, 
-    {
-      albumId: 4,
-      albumTitle: "Let It Be",
-      genre: "Rock",
-      publicationDate: "2000-05-08",
-      artistId: 1,
-      groupName: "The Beatles"
-    }
-  ]
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
     </flow>
 	<flow name="get:\albums\(albumId):mo-music-factory-api-config">
         <ee:transform doc:name="Transform Message">

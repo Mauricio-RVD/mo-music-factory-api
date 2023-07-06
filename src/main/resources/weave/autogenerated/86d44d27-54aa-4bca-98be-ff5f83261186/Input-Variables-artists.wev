@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_86d44d27_54aa_4bca_98be_ff5f83261186_Input_Variables_artists = Any
+

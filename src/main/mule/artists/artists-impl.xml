@@ -75,11 +75,12 @@ output application/json
 	<sub-flow name="sr-insert-artist" doc:id="86d44d27-54aa-4bca-98be-ff5f83261186" >
 		<logger level="INFO" doc:name="INFO START payload" doc:id="2ca12218-1926-4d76-a53a-1be72c207e4a" message="#['sr-insert-artist::START::artist: ' ++ write(payload,'application/json')]"/>
 		<set-variable value="#[payload.artist]" doc:name="incomingArtist" doc:id="626e1b5b-718b-4cc2-bdf6-1c1bbbd64fc7" variableName="incomingArtist"/>
-		<db:insert doc:name="Insert Artist" doc:id="ed5c0d9c-aa11-4d65-bf6c-b4f572b46411" config-ref="mysql-config">
-			<db:sql ><![CDATA[INSERT INTO BC_MUSIC_FACTORY.BC_ARTIST 
+		<try doc:name="Try" doc:id="292611a1-b4c7-4d15-9e9f-1fcaea975152" >
+			<db:insert doc:name="Insert Artist" doc:id="ed5c0d9c-aa11-4d65-bf6c-b4f572b46411" config-ref="mysql-config">
+			<db:sql><![CDATA[INSERT INTO BC_MUSIC_FACTORY.BC_ARTIST 
          (ARTIST_ID, GROUP_NM, FIRST_NM, LAST_NM, MI, BIRTH_DATE, DEATH_DATE, STATUS_CD) 
          VALUES (NULL, :groupName, :firstName, :lastName, :mi, :birthDate, :deathDate, 'mo')]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{
+			<db:input-parameters><![CDATA[#[{
     groupName: 	vars.incomingArtist.groupName,
     firstName: 	vars.incomingArtist.firstName,
     lastName: 	vars.incomingArtist.lastName,
@@ -88,21 +89,30 @@ output application/json
     deathDate: 	vars.incomingArtist.dateOfDeath
 }]]]></db:input-parameters>
 		</db:insert>
-		<db:select doc:name="Select Insert" doc:id="d5af616a-745f-4b0a-b8e8-a10f93e67328" config-ref="mysql-config" target="newArtistId">
-			<db:sql ><![CDATA[SELECT MAX(artist_id) AS artist_id from BC_MUSIC_FACTORY.BC_ARTIST
+			<db:select doc:name="Select Insert" doc:id="d5af616a-745f-4b0a-b8e8-a10f93e67328" config-ref="mysql-config" target="newArtistId">
+			<db:sql><![CDATA[SELECT MAX(artist_id) AS artist_id from BC_MUSIC_FACTORY.BC_ARTIST
     WHERE GROUP_NM = :groupName 
           AND BIRTH_DATE = :birthDate 
           AND FIRST_NM = :firstName
           AND LAST_NM = :lastName
 ]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{
+			<db:input-parameters><![CDATA[#[{
     groupName: 	vars.incomingArtist.groupName,
     firstName: 	vars.incomingArtist.firstName,
     lastName: 	vars.incomingArtist.lastName,
     birthDate: 	vars.incomingArtist.dateOfBirth
 }]]]></db:input-parameters>
 		</db:select>
-		<set-payload value="#[output application/java&#10;var artist = vars.incomingArtist&#10;var newArtistId = vars.newArtistId[0].artist_id default 0&#10;---&#10;{&#10;	artistId: 	newArtistId,&#10;	groupName: 	artist.groupName,&#10;	lastName: 	artist.lastName,&#10;	firstName: 	artist.firstName,&#10;	mi:       	artist.mi,&#10;	dateOfBirth: 	artist.dateOfBirth,&#10;	dateOfDeath:	artist.dateOfDeath&#10;}]" doc:name="Update Payload" doc:id="315df187-19d1-4ce2-b29f-7380a0b9b272" />
+			<set-payload value="#[output application/java&#10;var artist = vars.incomingArtist&#10;var newArtistId = vars.newArtistId[0].artist_id default 0&#10;---&#10;{&#10;	artistId: 	newArtistId,&#10;	groupName: 	artist.groupName,&#10;	lastName: 	artist.lastName,&#10;	firstName: 	artist.firstName,&#10;	mi:       	artist.mi,&#10;	dateOfBirth: 	artist.dateOfBirth,&#10;	dateOfDeath:	artist.dateOfDeath&#10;}]" doc:name="Update Payload" doc:id="315df187-19d1-4ce2-b29f-7380a0b9b272" />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3a179908-f333-4b0d-bf4d-905b46e54d35" type="DB:QUERY_EXECUTION">
+					<logger level="INFO" doc:name="ERROR" doc:id="b7aebda2-4bce-4803-9a20-99038190d1a8" message="#['sr-insert-artist::OnErrorPropagate::payload: ' ++ write(payload,'application/json')]"/>
+				</on-error-propagate>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d5c1f55a-b92b-4778-9e83-0a9ac15e4866" type="EXPRESSION">
+					<logger level="INFO" doc:name="ERROR" doc:id="6f0805d2-3f2d-4752-a8d2-112470135f5f" message="#['sr-insert-artist::OnErrorContinue::payload: ' ++ write(payload,'application/json')]"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
 		<logger level="INFO" doc:name="INFO END" doc:id="4d96efee-9c5a-40a2-9d05-8d74969412cb" message="#['sr-insert-artist::END:payload: ' ++ write(payload,'application/json')]"/>
 	</sub-flow>
 	<sub-flow name="impl-add-artists" doc:id="d77e67c3-686e-410d-abd0-4078e145c3c9" >

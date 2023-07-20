@@ -36,35 +36,6 @@ output application/json
 	<flow name="post:\albums:application\json:mo-music-factory-api-config">
         <set-variable value="albums-main::impl-add-albums" doc:name="currentFlow" doc:id="8a0064c3-b8fa-4ce2-8ae8-79d7944af55e" variableName="currentFlow"/>
 		<flow-ref doc:name="Flow Reference" doc:id="4fae84b6-7805-4383-891e-58dfac876e45" name="impl-add-albums"/>
-		<ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  statusCode: 201,
-  message: "SUCCESS",
-  albums: [
-    {
-      albumId: 1001,
-      albumTitle: "Telegraph Canyon I",
-      genre: "Pop",
-      publicationDate: "2016-01-29",
-      artistId: 5,
-      artistName: "His Majesty"
-    }, 
-    {
-      albumId: 1002,
-      albumTitle: "Telegraph Canyon II",
-      genre: "Pop",
-      publicationDate: "2018-01-29",
-      artistId: 5,
-      artistName: "Prince"
-    }
-  ]
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
     </flow>
 	<flow name="put:\albums\(albumId):application\json:mo-music-factory-api-config">
         <ee:transform doc:name="Transform Message">

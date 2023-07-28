@@ -10,10 +10,28 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	correlationId: message.attributes.headers.correlation_id,&#10;	clientId: message.attributes.headers.client_id,&#10;	clientSecret: message.attributes.headers.client_secret&#10;}]" doc:name="headerAttributes" doc:id="4f0dcbe2-15b1-4a5e-a184-0b310a8c3844" variableName="headerAttributes"/>
-		<set-variable value="mo-music-factory-api-main::apiKitRouter" doc:name="currentFlow" doc:id="f49996c0-0318-4413-a6ec-d90e180d67d6" variableName="currentFlow"/>
+        <ee:transform doc:name="headerAttributes &amp; currentFlow" doc:id="9429a4b1-46e6-4ba5-8104-325b3d13491c" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="headerAttributes" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	correlationId: message.attributes.headers.correlation_id default uuid(),
+	clientId: message.attributes.headers.client_id default "",
+	clientSecret: message.attributes.headers.client_secret default ""
+}
+]]></ee:set-variable>
+				<ee:set-variable variableName="currentFlow" ><![CDATA[%dw 2.0
+output application/json
+var currentFlow = "xx-music-factory-api-main::apiKitRouter"
+---
+currentFlow]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<apikit:router config-ref="mo-music-factory-api-config"/>
-		<logger level="INFO" doc:name="Logger" doc:id="26e428e1-7344-4ef3-8bf2-10de89a1b0fb" message="#['xx-music-factory-api-main::payload: ' ++ write(payload,'application/json')]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="26e428e1-7344-4ef3-8bf2-10de89a1b0fb" message="#['xx-music-factory-api-main::payload: ' ++ write(payload,'application/json')]" category="${logcat}"/>
     </flow>
     <flow name="mo-music-factory-api-console">
         <http:listener path="/console/*" config-ref="http-listener-config">

@@ -10,6 +10,15 @@
 	<munit:config name="albums-impl-test-suite.xml" />
 	<munit:test name="albums-impl-test-suite" doc:id="1cc956a6-a21c-4f9d-88df-daa39402d1cd" description="Test">
 		<munit:behavior >
+			<munit-tools:spy doc:name="albumTitle" doc:id="ef00d37a-0895-4bdb-9a21-5c2682d3e64a" processor="set-variable">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="93df7d86-27e6-44c2-8035-830bacf40638" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="albumTitle" attributeName="variableName" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call>
+					<munit-tools:assert-that doc:name="Assert that albumTitle is Let it Be" doc:id="592ea5b8-6b65-403f-937d-1c57059c4870" is='#[MunitTools::equalTo("Let it Be")]' message="albumTitle is Munit Test" expression="#[attributes.queryParams.albumTitle]" />
+				</munit-tools:after-call>
+			</munit-tools:spy>
 			<munit-tools:mock-when doc:name="Mock when" doc:id="59025e9d-b220-46e8-b522-578261a93042" processor="db:select">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="SELECT albums" attributeName="doc:name" />
@@ -20,6 +29,18 @@
 					<munit-tools:payload value='#[output application/java&#10;---&#10;[&#10;  {&#10;    "ALBUM_ID": 1,&#10;    "TITLE": "MUnit Let It Be",&#10;    "GENRE": "ROCK",&#10;    "PUBLICATION_DT": "1970-05-08",&#10;    "ARTIST_ID": 1,&#10;    "ARTIST_NM": "The Beatles"&#10;  },&#10;  {&#10;    "ALBUM_ID": 2,&#10;    "TITLE": "MUnit Let It Be (CD)",&#10;    "GENRE": "ROCK",&#10;    "PUBLICATION_DT": "1970-05-08",&#10;    "ARTIST_ID": 1,&#10;    "ARTIST_NM": "The Beatles"&#10;  }&#10;]]' />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="select" doc:id="4ad01ca3-d440-405b-b8c0-2b24981550c4" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Transform Message" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="44cf2bb9-288a-478f-9dec-f6eb65ecc849" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<munit-tools:assert-that doc:name="Assert equals select size = 2" doc:id="6e7165a2-efd0-472b-80d4-ebdc1411d926" is="#[MunitTools::equalTo(2)]" message="SIZE = 2" expression="#[sizeOf(payload)]"/>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert-that doc:name="Assert equals transform size = 2" doc:id="88f231af-318c-4f04-a624-ba640eba27f5" is="#[MunitTools::equalTo(2)]" message="SIZE = 2" expression="#[sizeOf(payload.albums)]"/>
+				</munit-tools:after-call>
+			</munit-tools:spy>
 		</munit:behavior>
 		<munit:execution >
 			<munit:set-event doc:name="Set Event" doc:id="050884bd-8f43-462b-be6f-1297752aa9cf" >

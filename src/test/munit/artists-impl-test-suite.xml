@@ -48,6 +48,29 @@
 			<munit-tools:assert-that doc:name="Assert that bioUrl found" doc:id="391f17b2-11b0-49f7-8823-285a3e7db28f" is='#[MunitTools::startsWith("https://")]' expression="#[payload.bioUrl]" message="bioUrl not found"/>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="artists-impl-get-artists-test" doc:id="31e281b9-c74a-4726-8b62-f1938bf80b13" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="aa6540a5-39eb-4145-8684-abde85a00792" processor="db:select">
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java&#10;---&#10;[{&#10;	ARTIST_ID: 2,&#10;	GROUP_NM: "MUnit Test",&#10;	FIRST_NM: "John",&#10;	LAST_NM: "Lennon",&#10;	BIRTH_DATE: "1940-01-01",&#10;	DEATH_DATE: "1980-11-01"&#10;}]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="groupName queryParam" doc:id="d93fa97f-871f-4cf9-ba32-34762f45bc50" >
+				<munit:attributes value='#[{queryParams: {"groupName":"MUnit Test"}}]' />
+				<munit:variables >
+					<munit:variable key="headerAttributes" value="#[{correlationId: '12345', clientId: '12345', clientSecret: '12345'}]" mediaType="application/java" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="impl-get-artists" doc:id="ab8cf141-b06d-41ce-9270-3ece90e20f6e" name="impl-get-artists"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that NOT null" doc:id="e159c3f5-a610-42e3-b6e8-9e6c4e9f0f0e" is="#[MunitTools::notNullValue()]" message="NOT null" expression="#[payload]"/>
+			<munit-tools:assert-that doc:name="Assert that Artist firstName" doc:id="4a4809d3-9434-4109-81e0-855fb8ff8383" is="#[MunitTools::startsWith('John')]" message="NOT John" expression="#[payload.artists[0].firstName as String]"/>
+			<munit-tools:assert-that doc:name="Assert that Artist lastName" doc:id="44f9768d-b60c-46da-ae46-30315cc8d045" is="#[MunitTools::startsWith('Lennon')]" message="NOT Lennon" expression="#[payload.artists[0].lastName as String]"/>
+		</munit:validation>
+	</munit:test>
 
 
 </mule>

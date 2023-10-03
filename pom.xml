@@ -49,6 +49,10 @@
 					</execution>
 				</executions>
 				<configuration>
+				    <argLines>
+	  					<argLine>-Danypoint.platform.gatekeeper=disabled</argLine>
+    				</argLines>
+				
 					<coverage>
 						<runCoverage>true</runCoverage>
 						<formats>

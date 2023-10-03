@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd    http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="apikit-test-suite.xml"/>
+	<munit:test description="Test" doc:id="096b9baf-e3b9-4668-ad6b-2b86db055dea" name="get-artist-test">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="mo-music-factory-api-main" />
+			<munit:enable-flow-source value="get:\artists:mo-music-factory-api-config" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when SELECT" doc:id="2ecf90ca-7b5d-412a-9f3d-076674e139fb" processor="db:select" >
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java&#10;---&#10;[{&#10;	artist_id: 2,&#10;	group_nm: "MUnit Test",&#10;	first_nm: "John",&#10;	last_nm: "Lennon",&#10;	birth_date: "1940-01-01",&#10;	death_date: "1980-11-01"&#10;}]]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:name="firstName queryParam" doc:id="6ca933b8-8847-4e34-86df-4ef2bd6d5945">
+				<munit:attributes value='#[{queryParams: {"groupName":"MUnit Test"}}]' />
+				<munit:variables >
+					<munit:variable key="headerAttributes" value="#[{correlationId: '12345', clientId: '12345', clientSecret: '12345'}]" mediaType="application/java" />
+				</munit:variables>
+			</munit:set-event>
+			<http:request method="GET" doc:name="Get Artist Bio" doc:id="f4af2fa4-6685-49f2-bb78-ea824ff4d742" config-ref="last-fm-http-config" path="/${last.fm.version}" >
+				<http:headers ><![CDATA[#[{"Accept":"application/json","correlation_id":"9999","client_secret":"2222","client_id":"3333"}]]]></http:headers>
+				<http:query-params ><![CDATA[#[{
+	"firstName":attributes.queryParams.firstName
+}]]]></http:query-params>
+			</http:request>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that NOT null" doc:id="d51a788e-500b-4ec6-bb8f-330c443138be" message="NOT null" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+			<munit-tools:assert-that doc:name="Assert that Artist groupName" doc:id="3025ac39-5a28-4b22-90e5-33efecee73c9" message="NOT John" expression="#[payload.artists[0].groupName as String]" is="#[MunitTools::startsWith('MUnit Test')]" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

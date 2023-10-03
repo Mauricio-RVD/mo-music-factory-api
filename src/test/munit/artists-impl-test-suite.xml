@@ -71,6 +71,61 @@
 			<munit-tools:assert-that doc:name="Assert that Artist lastName" doc:id="44f9768d-b60c-46da-ae46-30315cc8d045" is="#[MunitTools::startsWith('Lennon')]" message="NOT Lennon" expression="#[payload.artists[0].lastName as String]"/>
 		</munit:validation>
 	</munit:test>
-
+	<munit:test name="artists-impl-add-artists-test" doc:id="8642e52c-8af8-4e92-9e15-278e70827f5e" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when flow-ref" doc:id="42cb0c83-6510-4410-91a8-58b2ee0f96a1" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ff1b7d3b-ae63-4c1d-8ec9-48e2fa6e241e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="getArtistResponse" value="#[{&quot;statusCode&quot;: &quot;200&quot;, &quot;message&quot;: &quot;SUCCESS&quot;, &quot;searchCriteria&quot;: &quot;[lastName: 'Hickman', firstName: 'Johnny', groupName: 'Telegraph Canyon', birthDate: '1988-01-29', ]&quot;, &quot;artists&quot;: []}]" mediaType="application/java" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when insert artists" doc:id="5876a774-5757-4bcb-968b-0ab08d0931cc" processor="db:insert" />
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Post Artist Array" doc:id="c75b0d4f-afcb-4037-8472-8d5de5e613d1" >
+				<munit:payload value='#[{&#10;  "artists": [&#10;    {&#10;      "groupName": "Telegraph Canyon",&#10;      "lastName": "Hickman",&#10;      "firstName": "Jill",&#10;      "dateOfBirth": "1988-01-29"&#10;    },&#10;    {&#10;      "groupName": "Telegraph Canyon",&#10;      "lastName": "Harrison",&#10;      "firstName": "Ted",&#10;      "mi": "B",&#10;      "dateOfBirth": "1982-03-21",&#10;"dateOfDeath": "2019-01-15"&#10;    }&#10;  ]&#10;}]' />
+				<munit:variables >
+					<munit:variable key="headerAttributes" value="#[{correlationId: '12345', clientId: '12345', clientSecret: '12345'}]" mediaType="application/java" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="impl-add-artists" doc:id="482ca4c0-afbf-4dae-ad69-490bbb1a8909" name="impl-add-artists"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that NOT null" doc:id="937ee068-d8d1-4a34-9d56-781668df4e9b" is="#[MunitTools::notNullValue()]" message="NOT null" expression="#[payload]"/>
+			<munit-tools:assert-that doc:name="Assert that added = 2" doc:id="11d7a9f7-2294-49e2-b3ec-b47719dcb229" is="#[MunitTools::equalTo(2)]" message="added = 2" expression="#[sizeOf(payload.results.addedArtists)]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="artists-impl-add-artists-duplicates-test" doc:id="3eb65f1a-638b-4e88-9c68-e8276da934e5" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when flow-ref" doc:id="a39f788c-638b-464c-bf3e-2dcb367e1a70" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bff65453-67ad-49e5-aa4a-ead0f628d26c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="getArtistResponse" value="#[{&quot;statusCode&quot;: &quot;200&quot;, &quot;message&quot;: &quot;SUCCESS&quot;, &quot;searchCriteria&quot;: &quot;[lastName: 'Hickman', firstName: 'Johnny', groupName: 'Telegraph Canyon', birthDate: '1988-01-29', ]&quot;, &quot;artists&quot;: [{&quot;artistId&quot;: 4,&quot;groupName&quot;: &quot;Telegraph Canyon&quot;,&quot;lastName&quot;: &quot;Hickman&quot;,&quot;firstName&quot;: &quot;Johnny&quot;,&quot;mi&quot;: &quot;&quot;,&quot;dateOfBirth&quot;: &quot;1988-01-29&quot;,&quot;dateOfDeath&quot;: &quot;&quot;}]}]" mediaType="application/java" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when insert artists" doc:id="82b4e90b-e0e7-4abf-a3da-2471e44af6a8" processor="db:insert" />
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Post Artist Array" doc:id="d4111ddc-f2f0-496f-9b93-e383daa3697c" >
+				<munit:payload value='#[{&#10;  "artists": [&#10;    {&#10;      "groupName": "Telegraph Canyon",&#10;      "lastName": "Hickman",&#10;      "firstName": "Jill",&#10;      "dateOfBirth": "1988-01-29"&#10;    },&#10;    {&#10;      "groupName": "Telegraph Canyon",&#10;      "lastName": "Harrison",&#10;      "firstName": "Ted",&#10;      "mi": "B",&#10;      "dateOfBirth": "1982-03-21",&#10;"dateOfDeath": "2019-01-15"&#10;    }&#10;  ]&#10;}]' />
+				<munit:variables >
+					<munit:variable key="headerAttributes" value="#[{correlationId: '12345', clientId: '12345', clientSecret: '12345'}]" mediaType="application/java" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="impl-add-artists" doc:id="f695f468-e95a-4f8c-8956-17c42476b2e3" name="impl-add-artists"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that NOT null" doc:id="275eca8f-c8af-4742-9c68-8ffe3562b0c3" is="#[MunitTools::notNullValue()]" message="NOT null" expression="#[payload]"/>
+			<munit-tools:assert-that doc:name="Assert that duplicates = 2" doc:id="4a891fdd-757a-4963-954b-8fb9fd6c6a49" is="#[MunitTools::equalTo(2)]" message="duplicates = 2" expression="#[sizeOf(payload.results.duplicatedArtists)]"/>
+		</munit:validation>
+	</munit:test>
 
 </mule>
